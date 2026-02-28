@@ -1,10 +1,16 @@
 FROM node:20-bookworm-slim
 
-# Install Chromium + required libraries (includes libnss3)
+# Install Chromium + required libraries + fonts (Khmer)
 RUN apt-get update && apt-get install -y --no-install-recommends \
   chromium \
   ca-certificates \
   fonts-liberation \
+  fonts-noto-core \
+  fonts-noto-ui-core \
+  fonts-noto-color-emoji \
+  fonts-noto-extra \
+  fonts-noto-unhinted \
+  fonts-noto-khmer \
   libnss3 \
   libatk-bridge2.0-0 \
   libatk1.0-0 \
@@ -20,7 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libpangocairo-1.0-0 \
   libpango-1.0-0 \
   libgtk-3-0 \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && fc-cache -f -v
 
 WORKDIR /app
 
