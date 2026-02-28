@@ -13,7 +13,8 @@ app.post("/screenshot", async (req, res) => {
     const { spreadsheetId, gid } = req.body || {};
     if (!spreadsheetId || !gid) return res.status(400).send("Missing spreadsheetId/gid");
 
-    const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit#gid=${gid}`;
+    // const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit#gid=${gid}`;
+    const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vR2-Ih8dHyYTrhWUSyYgngFLa0yS6DdhJmoel8y2MzNzMeCnKwKep3GV7Xj8H2iQX3jh2HhL9qDupFi/pubhtml?gid=790763898&single=true`;
 
     const browser = await puppeteer.launch({
       headless: true,
