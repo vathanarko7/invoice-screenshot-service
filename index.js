@@ -26,4 +26,8 @@ app.post("/screenshot", async (req, res) => {
   res.send(screenshot);
 });
 
+
 app.listen(process.env.PORT || 8080);
+
+app.get("/", (req, res) => res.status(200).send("ok"));
+app.get("/healthz", (req, res) => res.status(200).send("ok"));
