@@ -1,22 +1,36 @@
-FROM node:20-bullseye
+FROM node:20-bookworm-slim
 
-# Install Google Chrome Stable
-RUN apt-get update && apt-get install -y \
-  wget gnupg ca-certificates fonts-liberation \
-  && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list \
-  && apt-get update && apt-get install -y google-chrome-stable \
+# Install Chromium + required libraries (includes libnss3)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  chromium \
+  ca-certificates \
+  fonts-liberation \
+  libnss3 \
+  libatk-bridge2.0-0 \
+  libatk1.0-0 \
+  libcups2 \
+  libdrm2 \
+  libxkbcommon0 \
+  libxcomposite1 \
+  libxdamage1 \
+  libxfixes3 \
+  libxrandr2 \
+  libgbm1 \
+  libasound2 \
+  libpangocairo-1.0-0 \
+  libpango-1.0-0 \
+  libgtk-3-0 \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --omit=dev
 
 COPY . .
 
 ENV PORT=8080
-ENV CHROME_BIN=/usr/bin/google-chrome-stable
-
+ENV CHROME_BIN=/usr/bin/chromium
 EXPOSE 8080
+
 CMD ["npm", "start"]

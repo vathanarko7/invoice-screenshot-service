@@ -11,50 +11,39 @@ app.post("/screenshot", async (req, res) => {
     const { spreadsheetId, gid } = req.body || {};
     if (!spreadsheetId || !gid) return res.status(400).send("Missing spreadsheetId/gid");
 
-    // IMPORTANT:
-    // This URL must be viewable by the Render server:
-    // - easiest: share sheet "Anyone with link can view"
+    // Sheet must be viewable by link, or use a published URL
     const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit#gid=${gid}`;
 
     const browser = await puppeteer.launch({
       headless: "new",
+      executablePath: process.env.CHROME_BIN || "/usr/bin/google-chrome",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
         "--disable-gpu",
-        "--no-zygote"
+        "--no-zygote",
       ],
-      executablePath: process.env.CHROME_BIN || "/usr/bin/google-chrome-stable"
     });
 
     try {
       const page = await browser.newPage();
-
-      // Bigger viewport = sharper sheet text
       await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 });
-
       page.setDefaultNavigationTimeout(90000);
       page.setDefaultTimeout(90000);
 
       await page.goto(url, { waitUntil: "networkidle2" });
-
-      // Give Sheets UI time to render fully (charts/fonts)
       await page.waitForTimeout(2500);
 
-      const png = await page.screenshot({
-        type: "png",
-        fullPage: true
-      });
-
+      const png = await page.screenshot({ type: "png", fullPage: true });
       res.setHeader("Content-Type", "image/png");
-      return res.status(200).send(png);
+      res.status(200).send(png);
     } finally {
       await browser.close();
     }
   } catch (e) {
     console.error(e);
-    return res.status(500).send(String(e?.stack || e));
+    res.status(500).send(String(e?.stack || e));
   }
 });
 
