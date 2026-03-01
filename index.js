@@ -30,13 +30,14 @@ app.post("/screenshot", async (req, res) => {
 
     try {
       const page = await browser.newPage();
-      await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 });
+      await page.setViewport({ width: 1600, height: 900, deviceScaleFactor: 3 });
 
       page.setDefaultNavigationTimeout(90000);
       page.setDefaultTimeout(90000);
 
       await page.goto(url, { waitUntil: "networkidle2" });
-      await sleep(2500); // ✅ instead of page.waitForTimeout
+      await page.addStyleTag({content: `*{font-family:"Khmer OS","Khmer OS System","Noto Sans",sans-serif !important;}`});
+      await sleep(1200); // ✅ instead of page.waitForTimeout
 
       const png = await page.screenshot({ type: "png", fullPage: true });
 

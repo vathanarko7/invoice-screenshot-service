@@ -1,16 +1,16 @@
 FROM node:20-bookworm-slim
 
-# Install Chromium + required libraries + fonts (Khmer)
+# Install Chromium + required libraries + Khmer fonts
 RUN apt-get update && apt-get install -y --no-install-recommends \
   chromium \
   ca-certificates \
   fonts-liberation \
+  fonts-khmeros \
   fonts-noto-core \
   fonts-noto-ui-core \
   fonts-noto-color-emoji \
   fonts-noto-extra \
   fonts-noto-unhinted \
-  fonts-noto-khmer \
   libnss3 \
   libatk-bridge2.0-0 \
   libatk1.0-0 \
